@@ -1,5 +1,6 @@
 import random
 import time
+import pymorphy2
 
 # Рандомайзер приоритетов снимает груз ответственности за принятие решений
 # и расстановки приоритетов задачам, которые надо делать.
@@ -16,25 +17,12 @@ def main():
     time.sleep(2)
     tasks_count = int(input(f"Сколько задач ты себе напланировал, {greetings}?: "))  # количество задач
     tasks_name = [input("Перечисли их: (по одной задаче на строчке) ") for _ in range(tasks_count)]  # список задач
-
-    # переменные для согласования в принтах
-    task_s = "задача"
-    task_s2 = "задачи"
-    task_pl = "задач"
+    
+    print(spell_check(tasks_count))
 
     # как реализовать веса и очки приоритетов: цифры или словесные выражения?
     priority_digits = [int(i) for i in range(1, tasks_count + 1)]
-    print(max(priority_digits))
-
-    # согласование в принтах
-    if tasks_count == 1 or tasks_count == 21 or tasks_count == 31:
-        print(f'Значит {tasks_count} {task_s}, давай посмотрим с чего же начать...')
-    elif tasks_count == 2 or tasks_count == 3 or tasks_count == 4:
-        print(f'Значит {tasks_count} {task_s2}, давай посмотрим с чего же начать...')
-    elif tasks_count == 22 or tasks_count == 23 or tasks_count == 24:
-        print(f'Значит {tasks_count} {task_s2}, давай посмотрим с чего же начать...')
-    else:
-        print(f'Значит {tasks_count} {task_pl}, давай посмотрим с чего же начать...')
+    
 
     time.sleep(3)
     print(f'Составляю список задач по степени важности')
@@ -53,5 +41,11 @@ def main():
         print("Приоритеты расставлены!", "Можно начинать с первого", sep='\n')
 
 
+def spell_check(digit):
+    morph = pymorphy2.MorphAnalyzer()
+    p = morph.parse('Задача')[0]
+    return f'Значит, {digit} {p.make_agree_with_number(digit).word}, давай посмотрим с чего же начать...'
+
+        
 if __name__ == "__main__":
     main()
